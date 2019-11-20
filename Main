@@ -1,0 +1,19 @@
+/*
+There is a lot of redundant code and some stuff that looks kinda weird. I know a better way to do this, I just did not
+have the time.
+ */
+import java.util.Scanner;
+public class Main {
+
+    public static void main(String[] args){
+        Scanner scan = new Scanner(System.in);
+
+        System.out.print("Please enter a file name: ");
+        String file = scan.nextLine();
+
+        MagicSquare square = new MagicSquare(file);
+
+        square.isMagicSquare();
+
+    }
+}
