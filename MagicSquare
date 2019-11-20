@@ -1,0 +1,187 @@
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.InputMismatchException;
+import java.util.Scanner;
+import java.io.FileInputStream;
+
+public class MagicSquare {
+
+    //variables and objects
+    private static FileInputStream FIS = null, FIS2 = null;
+    private static Scanner scan = null, scan2 = null;
+    private int[][] square = null;
+    private String file = "";
+    private int constant = 0, n =0,rowSum = 0, colSum = 0, diagSum = 0;
+    private boolean run = true,  ms = true;
+
+    public MagicSquare(String file){
+        this.file = file;
+        readFile(this.file);
+    }
+
+    public int getConstant(){
+        return constant;
+    }
+
+    public int getN(){
+        return n;
+    }
+
+    public void readFile(String file){
+        try {
+            FIS = new FileInputStream(file);
+            FIS2 = new FileInputStream(file);
+            scan = new Scanner(FIS);
+            scan2 = new Scanner(FIS2);
+
+            //find size
+            while(scan.hasNext()){
+                scan.nextInt();
+                n++;
+            }
+            n = (int)Math.sqrt(n);
+
+            square = new int[n][n];
+
+            while(scan2.hasNext()){
+                for(int i = 0; i < square.length; i++){
+                    for(int j = 0; j < square.length;j++){
+                        square[i][j] = scan2.nextInt();
+                    }
+                }
+            }
+            FIS.close();
+            FIS2.close();
+        }
+        catch(FileNotFoundException e){
+            System.out.println("File not found.");
+        } catch(IOException e){
+            System.out.println("Invalid input");
+        } catch(InputMismatchException e){
+            System.out.println("Input mismatch exception found. Only integers are accepted.");
+        } catch(NullPointerException e){
+            System.out.println("There is no data in the array");
+        }
+    }
+
+    public void printArray(){
+        for(int i = 0; i < square.length; i++){
+            for(int j = 0; j < square.length; j++){
+                System.out.print(square[i][j] + " ");
+            }
+
+        }
+    }
+
+    public void isMagicSquare(){
+            computeConstant();
+                if(!ms){
+                    printResult();
+                    System.exit(0);
+                }
+            row();
+                if(!ms){
+                    printResult();
+                    System.exit(0);
+                }
+            col();
+                if(!ms){
+                    printResult();
+                    System.exit(0);
+                }
+            firstDiag();
+                if(!ms){
+                    printResult();
+                    System.exit(0);
+                }
+            diagSum = 0;
+            secondDiag();
+            printResult();
+    }
+    public void computeConstant(){
+        for (int i = 0; i < square.length; i++) {
+            constant += square[0][i];
+        }
+    }
+    public void row(){
+        for (int i = 1; i < square.length; i++) {
+            rowSum = 0;
+            for (int j = 0; j < square.length; j++) {
+                rowSum += square[i][j];
+                if (rowSum == constant) {
+                    ms = true;
+                } else {
+                    ms = false;
+                }
+            }
+        }
+    }
+    public void col(){
+        for (int j = 0; j < square.length; j++) {
+            colSum = 0;
+            for (int i = 0; i < square.length; i++) {
+                colSum += square[i][j];
+                if (colSum == constant) {
+                    ms = true;
+                } else {
+                    ms = false;
+                }
+            }
+        }
+    }
+    public void firstDiag(){
+        for (int i = 0; i < square.length; i++) {
+            diagSum += square[i][i];
+            if (diagSum == constant) {
+                ms = true;
+            } else {
+                ms = false;
+            }
+            }
+        }
+    public void secondDiag(){
+        for (int i = 0; i < square.length; i++) {
+            diagSum += square[i][square.length - 1 - i];
+            if (diagSum == constant) {
+                ms = true;
+            } else {
+                ms = false;
+            }
+        }
+    }
+    public boolean numsUnique(){
+        boolean unique = true;
+        int counter = 0, check = square[0][0];
+
+        for(int i = 0; i < square.length; i++){
+            for(int j = 0; j < square.length;j++){
+                if(square[i][j] == check){
+                    counter++;
+                }
+            }
+        }
+
+        if(counter == (int)(Math.pow(square.length,2))){
+            unique = false;
+        }
+
+        return unique;
+    }
+    public void printResult(){
+
+        if (ms && numsUnique()) {
+            System.out.print("The combination of numbers ");
+            printArray();
+            System.out.println("is a magic square of order " + n + ".The magic constant is " + constant);
+        }
+        if (!ms || !numsUnique()) {
+            System.out.print("The combination of numbers ");
+            printArray();
+            System.out.print(" is not a magic square.");
+            if(!numsUnique()){
+                System.out.println(" The numbers were not unique...");
+            }
+        }
+    }
+
+}
